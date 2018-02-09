@@ -36,7 +36,7 @@ public class LogTests {
 		assertEquals(expected[0], actual[1]);
 
 		file.delete();
-		;
+		
 		TM.main(new String[] { "start", "testTask1" });
 		try {
 			TimeUnit.SECONDS.sleep(1);
