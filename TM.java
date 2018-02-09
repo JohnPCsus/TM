@@ -161,7 +161,10 @@ public class TM {
 
 	private void appMain(String[] args) {
 		log = new Log();
-
+		if(args.length==0){
+			printUsage();
+			return;
+		}
 		switch (args[0]) {
 		case "start":
 			if (args.length == 2) {
