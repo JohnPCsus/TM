@@ -141,7 +141,7 @@ class Log implements Serializable {
 }
 
 enum Command {
-	start("start"), stop("stop"), summary("summary"), description("description");
+	start("start"), stop("stop"), summary("summary"), description("description"),size("size");
 	@SuppressWarnings("unused")
 	private final String sValue;
 
@@ -161,7 +161,7 @@ public class TM {
 
 	private void appMain(String[] args) {
 		log = new Log();
-		if(args.length==0){
+		if (args.length == 0) {
 			printUsage();
 			return;
 		}
@@ -176,6 +176,11 @@ public class TM {
 				commandStop(args[1]);
 			}
 			break;
+			
+		case "size":
+			if(args.length==2){
+				commandSize(args[1],args[2]);
+			}
 		case "summary":
 			if (args.length == 1) {
 				System.out.println("Task Name" + "	" + "Time" + "		" + "Description");
@@ -220,7 +225,7 @@ public class TM {
 	 * This function calculates the total time spent on a task. as our time
 	 * values are all stored in epoch time we sum all of the start times, and
 	 * all of the stop times respectively. We then take the difference.
-	 *  (a-b)+(c-d) = (a+c)-(b+d).
+	 * (a-b)+(c-d) = (a+c)-(b+d).
 	 */
 	private void commandSummary(String task) {
 		Long startSum = (long) 0;
@@ -252,6 +257,9 @@ public class TM {
 
 	}
 
+	private void commandSize(String task, String size){
+		log.add(Command.size, task, size);
+	}
 	private void commandDescribe(String task, String description) {
 		log.add(Command.description, task, description);
 	}
