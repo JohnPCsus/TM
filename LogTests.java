@@ -72,9 +72,10 @@ public class LogTests {
 			e.printStackTrace();
 		}
 		TM.main(new String[] { "stop", "testTask1" });
+		TM.main(new String[]{"size","testTask1","XL"});
 
 		
-		TM.main(new String[] { "summary", "testTask1" });
+	//	TM.main(new String[] { "summary", "testTask1" });
 		
 		TM.main(new String[] { "summary"});
 

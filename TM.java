@@ -84,7 +84,7 @@ class Log implements Serializable {
 				return i.data;
 			}
 		}
-		return null;
+		return "";
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class TM {
 			break;
 			
 		case "size":
-			if(args.length==2){
+			if(args.length==3){
 				commandSize(args[1],args[2]);
 			}
 		case "summary":
@@ -244,7 +244,8 @@ public class TM {
 		}
 
 		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "	"
-				+ (description == (null) ? "" : description));
+				+ description + "	"+ log.getLastInstanceOf(Command.size, task));
+	//	System.out.println();
 	}
 
 	private void commandSummary() {
