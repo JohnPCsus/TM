@@ -183,10 +183,10 @@ public class TM {
 			}
 		case "summary":
 			if (args.length == 1) {
-				System.out.println("Task Name" + "	" + "Time" + "		" + "Description"+"	"+"size");
+				System.out.println("Task Name" + "	" + "Time" + "			" +"size"+"	"+ "Description"+"	");
 				commandSummary();
 			} else if (args.length == 2) {
-				System.out.println("Task Name" + "	" + "Time" + "		" + "Description"+"	"+"size");
+				System.out.println("Task Name" + "	" + "Time" + "			" +"size"+"	"+ "Description"+"	");
 				commandSummary(args[1]);
 			}
 			break;
@@ -234,7 +234,7 @@ public class TM {
 		Long stopSum = (long) 0;
 
 		String[] values;
-		String description = log.getLastInstanceOf(Command.description, task);
+		String description = summaryFormatter(log.getAllInstanceOf(Command.description, task));
 
 		values = log.getAllInstanceOf(Command.start, task);
 		for (String i : values) {
@@ -245,8 +245,8 @@ public class TM {
 			stopSum += Long.parseLong(i);
 		}
 
-		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "	" + description + "		"
-				+ log.getLastInstanceOf(Command.size, task));
+		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum)  + "		"
+				+ log.getLastInstanceOf(Command.size, task)+"	" + description);
 		// System.out.println();
 	}
 
@@ -258,6 +258,16 @@ public class TM {
 			commandSummary(i);
 		}
 
+	}
+	private String summaryFormatter(String [] line){
+		String returnString = "";
+		for(String i : line){
+			returnString = returnString + i +" ";
+		}
+		
+		
+		
+		return returnString;
 	}
 
 	private void commandSize(String task, String size) {

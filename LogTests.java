@@ -3,6 +3,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Test;
 
 public class LogTests {
@@ -81,5 +82,10 @@ public class LogTests {
 		TM.main(new String[] { "stop", "TM" });
 
 		TM.main(new String[] { "summary" });
+	}
+	@After
+	public void cleanup(){
+		java.io.File file = new File("data.txt");
+		file.delete();
 	}
 }
