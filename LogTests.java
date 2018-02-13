@@ -8,7 +8,7 @@ import org.junit.Test;
 public class LogTests {
 
 	@Test
-	public void test() {
+	public void Logtests() {
 		java.io.File file = new File("data.txt");
 		file.delete();
 		Log log = new Log();
@@ -36,7 +36,11 @@ public class LogTests {
 		assertEquals(expected[0], actual[1]);
 
 		file.delete();
-		
+
+	}
+
+	@Test
+	public void TMtests() {
 		TM.main(new String[] { "start", "testTask1" });
 		try {
 			TimeUnit.SECONDS.sleep(1);
@@ -45,7 +49,7 @@ public class LogTests {
 			e.printStackTrace();
 		}
 		TM.main(new String[] { "stop", "testTask1" });
-		
+
 		TM.main(new String[] { "start", "testTask1" });
 		try {
 			TimeUnit.SECONDS.sleep(1);
@@ -54,16 +58,15 @@ public class LogTests {
 			e.printStackTrace();
 		}
 		TM.main(new String[] { "stop", "testTask1" });
-		
+
 		TM.main(new String[] { "describe", "testTask1", "task" });
 
 		TM.main(new String[] { "describe", "testTask1", "a task" });
-		
-		
+
 		TM.main(new String[] { "start", "testTask2" });
 
 		TM.main(new String[] { "stop", "testTask2" });
-		
+
 		TM.main(new String[] { "start", "testTask1" });
 		try {
 			TimeUnit.SECONDS.sleep(1);
@@ -72,12 +75,11 @@ public class LogTests {
 			e.printStackTrace();
 		}
 		TM.main(new String[] { "stop", "testTask1" });
-		TM.main(new String[]{"size","testTask1","XL"});
+		TM.main(new String[] { "size", "testTask1", "XL" });
 
-		
-	//	TM.main(new String[] { "summary", "testTask1" });
-		
-		TM.main(new String[] { "summary"});
+		TM.main(new String[] { "start", "TM" });
+		TM.main(new String[] { "stop", "TM" });
 
+		TM.main(new String[] { "summary" });
 	}
 }

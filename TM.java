@@ -141,7 +141,7 @@ class Log implements Serializable {
 }
 
 enum Command {
-	start("start"), stop("stop"), summary("summary"), description("description"),size("size");
+	start("start"), stop("stop"), summary("summary"), description("description"), size("size");
 	@SuppressWarnings("unused")
 	private final String sValue;
 
@@ -156,10 +156,10 @@ public class TM {
 
 	public static void main(String[] args) {
 		TM manager = new TM();
-		manager.appMain(args);
+		manager.commandSwitcher(args);
 	}
 
-	private void appMain(String[] args) {
+	private void commandSwitcher(String[] args) {
 		log = new Log();
 		if (args.length == 0) {
 			printUsage();
@@ -176,28 +176,30 @@ public class TM {
 				commandStop(args[1]);
 			}
 			break;
-			
+
 		case "size":
-			if(args.length==3){
-				commandSize(args[1],args[2]);
+			if (args.length == 3) {
+				commandSize(args[1], args[2]);
 			}
 		case "summary":
 			if (args.length == 1) {
-				System.out.println("Task Name" + "	" + "Time" + "		" + "Description");
+				System.out.println("Task Name" + "	" + "Time" + "		" + "Description"+"	"+"size");
 				commandSummary();
 			} else if (args.length == 2) {
-				System.out.println("Task Name" + "	" + "Time" + "		" + "Description");
+				System.out.println("Task Name" + "	" + "Time" + "		" + "Description"+"	"+"size");
 				commandSummary(args[1]);
 			}
 			break;
 		case "describe":
 			if (args.length == 3) {
 				commandDescribe(args[1], args[2]);
+			} else if (args.length == 4) {
+				commandSize(args[1], args[3]);
 			}
 			break;
 		default:
 			printUsage();// if we get here then no properly formatted command
-							// was entered.
+						 // was entered.
 		}
 		log.close();
 
@@ -243,9 +245,9 @@ public class TM {
 			stopSum += Long.parseLong(i);
 		}
 
-		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "	"
-				+ description + "	"+ log.getLastInstanceOf(Command.size, task));
-	//	System.out.println();
+		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "	" + description + "		"
+				+ log.getLastInstanceOf(Command.size, task));
+		// System.out.println();
 	}
 
 	private void commandSummary() {
@@ -258,9 +260,10 @@ public class TM {
 
 	}
 
-	private void commandSize(String task, String size){
+	private void commandSize(String task, String size) {
 		log.add(Command.size, task, size);
 	}
+
 	private void commandDescribe(String task, String description) {
 		log.add(Command.description, task, description);
 	}
