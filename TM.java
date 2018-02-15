@@ -1,5 +1,7 @@
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,32 +22,44 @@ class Log implements Serializable {
 	String filePath = "data.dat";
 	LinkedList<Record> logData;
 
-	@SuppressWarnings("unchecked")
-	Log() {
+	// @SuppressWarnings("unchecked")
+	Log() throws FileNotFoundException, IOException {
 
 		File file = new File(filePath);
 
-		try {
-			/*
-			 * createNewFile returns true if file did not exists, and false if
-			 * it did.
-			 */
-			if (file.createNewFile()) {
-				logData = new LinkedList<Record>();
+		/*
+		 * createNewFile returns true if file did not exists, and false if it
+		 * did.
+		 */
+		if (file.createNewFile()) {
+			logData = new LinkedList<Record>();
 
-			} else {
+		} else {
 
-				FileInputStream fin = new FileInputStream(filePath);
-				ObjectInputStream in = new ObjectInputStream(fin);
+			FileInputStream fin = new FileInputStream(filePath);
+			try (ObjectInputStream in = new ObjectInputStream(fin)) {
+
 				Object readin = in.readObject();
 
 				logData = (LinkedList<Record>) readin;
-
-				in.close();
+			} catch (ClassNotFoundException e) {
+				// TODO do something better when logfile created, current it
+				// only silently deletes
+				file.delete();
+				file.createNewFile();
+				logData = new LinkedList<Record>();
+			} catch (EOFException e) {
+				/*
+				 * this catch block is currently identical the 
+				 * the previous catch block. These catch blocks
+				 * execute for different failure states that and handling 
+				 * may change later.
+				 */
+				file.delete();
+				file.createNewFile();
+				logData = new LinkedList<Record>();
 			}
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 	}
@@ -160,7 +174,13 @@ public class TM {
 	}
 
 	private void commandSwitcher(String[] args) {
-		log = new Log();
+		try {
+			log = new Log();
+		} catch (Exception e) {
+			System.out.println("Could not access log file, Exiting.");
+			return;
+		}
+
 		if (args.length == 0) {
 			printUsage();
 			return;
@@ -183,10 +203,10 @@ public class TM {
 			}
 		case "summary":
 			if (args.length == 1) {
-				System.out.println("Task Name" + "	" + "Time" + "			" +"size"+"	"+ "Description"+"	");
+				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
 				commandSummary();
 			} else if (args.length == 2) {
-				System.out.println("Task Name" + "	" + "Time" + "			" +"size"+"	"+ "Description"+"	");
+				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
 				commandSummary(args[1]);
 			}
 			break;
@@ -199,7 +219,7 @@ public class TM {
 			break;
 		default:
 			printUsage();// if we get here then no properly formatted command
-						 // was entered.
+							// was entered.
 		}
 		log.close();
 
@@ -245,8 +265,8 @@ public class TM {
 			stopSum += Long.parseLong(i);
 		}
 
-		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum)  + "		"
-				+ log.getLastInstanceOf(Command.size, task)+"	" + description);
+		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "		"
+				+ log.getLastInstanceOf(Command.size, task) + "	" + description);
 		// System.out.println();
 	}
 
@@ -259,14 +279,13 @@ public class TM {
 		}
 
 	}
-	private String summaryFormatter(String [] line){
+
+	private String summaryFormatter(String[] line) {
 		String returnString = "";
-		for(String i : line){
-			returnString = returnString + i +" ";
+		for (String i : line) {
+			returnString = returnString + i + " ";
 		}
-		
-		
-		
+
 		return returnString;
 	}
 
