@@ -8,37 +8,37 @@ import org.junit.Test;
 
 public class LogTests {
 
-	@Test
-	public void Logtests() {
-		java.io.File file = new File("data.txt");
-		file.delete();
-		Log log = new Log();
-		log.close();
-		log = new Log();
+//	@Test
+//	public void Logtests() {
+//		java.io.File file = new File("data.txt");
+//		file.delete();
+//		Log log = new Log();
+//		log.close();
+//		log = new Log();
 
-		log.add(Command.start, "testTask1", "1");
-		log.add(Command.stop, "testTask1", "2");
-		String[] expected = { "testTask1" };
-		String[] actual = log.getTasks();
-		assertEquals(expected[0], actual[0]);
+//		log.add(Command.start, "testTask1", "1");
+//		log.add(Command.stop, "testTask1", "2");
+//		String[] expected = { "testTask1" };
+//		String[] actual = log.getTasks();
+//		assertEquals(expected[0], actual[0]);
 
-		log.add(Command.start, "testTask2", "1");
-		log.add(Command.stop, "testTask2", "2");
-		expected = new String[] { "testTask1", "testTask2" };
-		actual = log.getTasks();
-		assertEquals(expected[1], actual[0]);
-		assertEquals(expected[0], actual[1]);
+//		log.add(Command.start, "testTask2", "1");
+//		log.add(Command.stop, "testTask2", "2");
+//		expected = new String[] { "testTask1", "testTask2" };
+//		actual = log.getTasks();
+//		assertEquals(expected[1], actual[0]);
+//		assertEquals(expected[0], actual[1]);
 
-		log.close();
-		log = new Log();
-		expected = new String[] { "testTask1", "testTask2" };
-		actual = log.getTasks();
-		assertEquals(expected[1], actual[0]);
-		assertEquals(expected[0], actual[1]);
+//		log.close();
+//		log = new Log();
+//		expected = new String[] { "testTask1", "testTask2" };
+//		actual = log.getTasks();
+//		assertEquals(expected[1], actual[0]);
+//		assertEquals(expected[0], actual[1]);
+//
+//		file.delete();
 
-		file.delete();
-
-	}
+//	}
 
 	@Test
 	public void TMtests() {

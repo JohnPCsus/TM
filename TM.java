@@ -29,38 +29,44 @@ class Log implements Serializable {
 		File file = new File(filePath);
 
 		/*
-		 * createNewFile returns true if file did not exists, and false if it
+		 * createNewFile returns true if file did not exist, and false if it
 		 * did.
 		 */
+		try{
 		if (file.createNewFile()) {
 			logData = new LinkedList<Record>();
 
 		} else {
 
-			FileInputStream fin = new FileInputStream(filePath);
-
-			try (ObjectInputStream in = new ObjectInputStream(fin)) {
-
-				Object readin = in.readObject();
-
-				logData = (LinkedList<Record>) readin;
-			} catch (ClassNotFoundException e) {
-				// TODO do something better when logfile corrupted, current it
-				// only silently deletes
-				deleteReplaceLogFile();
-			} catch (EOFException e) {
-				/*
-				 * this catch block is currently identical the the previous
-				 * catch block. These catch blocks execute for different failure
-				 * states that and handling may change later.
-				 */
-				deleteReplaceLogFile();
-			} catch (StreamCorruptedException e) {
-				deleteReplaceLogFile();
-			}
+			loadLogFile();
 
 		}
+		}catch(IOException e){
+			throw e;
+		}
 
+	}
+
+	private void loadLogFile() throws FileNotFoundException, IOException {
+		try (FileInputStream fin = new FileInputStream(filePath); ObjectInputStream in = new ObjectInputStream(fin)) {
+
+			Object readin = in.readObject();
+
+			logData = (LinkedList<Record>) readin;
+		} catch (ClassNotFoundException e) {
+			// TODO do something better when class not found, current it
+			// only silently deletes
+			deleteReplaceLogFile();
+		} catch (EOFException e) {
+			/*
+			 * this catch block is currently identical the the previous catch
+			 * block. These catch blocks execute for different failure states
+			 * that and handling may change later.
+			 */
+			deleteReplaceLogFile();
+		} catch (StreamCorruptedException e) {
+			deleteReplaceLogFile();
+		}
 	}
 
 	private void deleteReplaceLogFile() throws IOException {
