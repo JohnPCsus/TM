@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -37,36 +38,40 @@ class Log implements Serializable {
 		} else {
 
 			FileInputStream fin = new FileInputStream(filePath);
+
 			try (ObjectInputStream in = new ObjectInputStream(fin)) {
 
 				Object readin = in.readObject();
 
 				logData = (LinkedList<Record>) readin;
 			} catch (ClassNotFoundException e) {
-				// TODO do something better when logfile created, current it
+				// TODO do something better when logfile corrupted, current it
 				// only silently deletes
-				file.delete();
-				file.createNewFile();
-				logData = new LinkedList<Record>();
+				deleteReplaceLogFile();
 			} catch (EOFException e) {
 				/*
-				 * this catch block is currently identical the 
-				 * the previous catch block. These catch blocks
-				 * execute for different failure states that and handling 
-				 * may change later.
+				 * this catch block is currently identical the the previous
+				 * catch block. These catch blocks execute for different failure
+				 * states that and handling may change later.
 				 */
-				file.delete();
-				file.createNewFile();
-				logData = new LinkedList<Record>();
+				deleteReplaceLogFile();
+			} catch (StreamCorruptedException e) {
+				deleteReplaceLogFile();
 			}
 
 		}
 
 	}
 
-	/**
-	 * 
-	 */
+	private void deleteReplaceLogFile() throws IOException {
+		File file = new File(filePath);
+
+		file.delete();
+		file.createNewFile();
+		logData = new LinkedList<Record>();
+
+	}
+
 	public void close() {
 		try {
 			FileOutputStream fout = new FileOutputStream(filePath);
