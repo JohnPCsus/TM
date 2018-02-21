@@ -1,9 +1,7 @@
-import static org.junit.Assert.*;
-
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class LogTests {
@@ -83,9 +81,9 @@ public class LogTests {
 
 		TM.main(new String[] { "summary" });
 	}
-	@After
+	@Before
 	public void cleanup(){
-		java.io.File file = new File("data.txt");
+		java.io.File file = new File("data.dat");
 		file.delete();
 	}
 }

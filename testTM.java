@@ -1,11 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedList;
-
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +26,8 @@ public class testTM {
 	@Test
 	public void logCreate_CreateFile() {
 		try {
+
+			@SuppressWarnings("unused")
 			Log testLog = new Log();
 		} catch (Exception e) {
 			fail();
@@ -47,6 +45,7 @@ public class testTM {
 			return;
 		}
 		try {
+			@SuppressWarnings("unused")
 			Log testLog = new Log();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,6 +63,7 @@ public class testTM {
 			return;
 		}
 		try {
+			@SuppressWarnings("unused")
 			Log testLog = new Log();
 		} catch (Exception e) {
 			fail();
@@ -74,24 +74,25 @@ public class testTM {
 	public void logCreate_FileExistsCorrupted() {
 		corruptLogFile();
 		try {
+			@SuppressWarnings("unused")
 			Log testLog = new Log();
 		} catch (Exception e) {
 			fail();
 		}
 	}
-	//@Test (expected = IOException.class)
-	
-//	public void logCreate_FailToOpenFile() throws IOException{
-//		File file = new File("data.dat");
-//		try{
-//		file.createNewFile();
-//		} catch (Exception e){
-//			return;
-//		}
-//		
-//		Log log = new Log();
-//		Log log2 = new Log();
-//	}
+	// @Test (expected = IOException.class)
+
+	// public void logCreate_FailToOpenFile() throws IOException{
+	// File file = new File("data.dat");
+	// try{
+	// file.createNewFile();
+	// } catch (Exception e){
+	// return;
+	// }
+	//
+	// Log log = new Log();
+	// Log log2 = new Log();
+	// }
 
 	@Test
 	public void logAdd_simple() {
@@ -136,19 +137,17 @@ public class testTM {
 
 	}
 
-	 @Test
-	 public void logGetTasks_ManyLogEntry(){
-		 Log log;
-		 populateLogFileMany();
-		 try{
+	@Test
+	public void logGetTasks_ManyLogEntry() {
+		Log log;
+		populateLogFileMany();
+		try {
 			log = new Log();
-		 } catch ( Exception e){
-			 return;
-		 }
-		 String[] Expected = {"Foo","test","boo"};
-		 String[] actual = log.getTasks();
-		 assertArrayEquals(Expected, actual);
-	 }
+		} catch (Exception e) {
+			return;
+		}
+		assertArrayEquals(new String[] { "Foo", "boo", "test" }, log.getTasks());
+	}
 
 	private void corruptLogFile() {
 		File logFile = new File("data.dat");
@@ -169,22 +168,23 @@ public class testTM {
 		}
 
 	}
-	 private void populateLogFileMany(){
-	 try{
-	 Log testLog = new Log();
-		testLog.add(Command.start, "Foo", "Bar");
-		testLog.add(Command.stop, "Foo", "Bar");
-		testLog.add(Command.start, "Foo", "Bar");
-		testLog.add(Command.stop, "Foo", "Bar");
-		testLog.add(Command.start, "boo", "Bar");
-		testLog.add(Command.stop, "boo", "b");
-		testLog.add(Command.start, "test", "Bar");
-		testLog.add(Command.stop, "test", "Bar");
-		testLog.add(Command.description, "Foo", "Bar");
-		testLog.close();
-	 } catch (Exception e){
-		 return;
-	 }
-	 }
+
+	private void populateLogFileMany() {
+		try {
+			Log testLog = new Log();
+			testLog.add(Command.start, "Foo", "Bar");
+			testLog.add(Command.stop, "Foo", "Bar");
+			testLog.add(Command.start, "Foo", "Bar");
+			testLog.add(Command.stop, "Foo", "Bar");
+			testLog.add(Command.start, "boo", "Bar");
+			testLog.add(Command.stop, "boo", "b");
+			testLog.add(Command.start, "test", "Bar");
+			testLog.add(Command.stop, "test", "Bar");
+			testLog.add(Command.description, "Foo", "Bar");
+			testLog.close();
+		} catch (Exception e) {
+			return;
+		}
+	}
 
 }
