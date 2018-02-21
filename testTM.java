@@ -9,7 +9,6 @@ import org.junit.Test;
 public class testTM {
 
 	@Before
-
 	public void deleteLogFile() {
 		File logFile = new File("data.dat");
 		logFile.delete();
