@@ -3,16 +3,17 @@ import java.util.concurrent.TimeUnit;
 public class TmModel {
 	Log log = null;
 
-	TmModel() throws Exception {
+	TmModel()  {
 		try {
 			log = new Log();
 		} catch (Exception e) {
+
 			
-			throw e;
-			//TODO do something here about this
+			System.out.println("Could not access log file, Exiting.");
 		}
 	}
-	public void close(){
+
+	public void close() {
 		log.close();
 	}
 
@@ -46,6 +47,7 @@ public class TmModel {
 		}
 		return lastStart > lastStop;
 	}
+
 	public void commandStart(String task) {
 		if (!isRunning(task)) {
 			Long time = System.currentTimeMillis();
@@ -55,22 +57,23 @@ public class TmModel {
 
 		}
 	}
-	
+
 	public void commandStop(String task) {
 		if (isRunning(task)) {
 			Long time = System.currentTimeMillis();
 			log.add(Command.stop, task, time.toString());
 		}
 	}
-	
+
 	/*
 	 * This function calculates the total time spent on a task. as our time
 	 * values are all stored in epoch time we sum all of the start times, and
 	 * all of the stop times respectively. We then take the difference.
 	 * (a-b)+(c-d) = (a+c)-(b+d).
 	 */
-	//TODO this method needs to not print to the screen, it needs to return type
-	//String[]
+	// TODO this method needs to not print to the screen, it needs to return
+	// type
+	// String[]
 	public void commandSummary(String task) {
 		Long startSum = (long) 0;
 		Long stopSum = (long) 0;
@@ -91,7 +94,7 @@ public class TmModel {
 				+ log.getLastInstanceOf(Command.size, task) + "	" + description);
 		// System.out.println();
 	}
-	
+
 	public void commandSummary() {
 
 		String[] tasks;
@@ -101,7 +104,7 @@ public class TmModel {
 		}
 
 	}
-	
+
 	public void commandSize(String task, String size) {
 		log.add(Command.size, task, size);
 	}
@@ -109,7 +112,8 @@ public class TmModel {
 	public void commandDescribe(String task, String description) {
 		log.add(Command.description, task, description);
 	}
-	//TODO this does not belong in this class
+
+	// TODO this does not belong in this class
 	private String summaryFormatter(String[] line) {
 		String returnString = "";
 		for (String i : line) {
@@ -118,8 +122,6 @@ public class TmModel {
 
 		return returnString;
 	}
-
-	
 
 	/**
 	 * Converts a time interval in milliseconds to proper HH:MM:SS format. code
@@ -130,7 +132,7 @@ public class TmModel {
 	 *            a time interval
 	 * @return a properly formated String in HH:MM:SS format
 	 */
-	//TODO this does not belong in this class
+	// TODO this does not belong in this class
 	private String millisToFormatedTime(Long millis) {
 		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
 				TimeUnit.MILLISECONDS.toMinutes(millis)

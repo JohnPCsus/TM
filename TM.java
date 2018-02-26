@@ -12,24 +12,21 @@ enum Command {
 }
 
 public class TM {
-	
+
 	private TmModel model = null;
 
 	public static void main(String[] args) {
 		TM manager = new TM();
 		manager.commandSwitcher(args);
 	}
-	
-	TM(){
-		try{
+
+	TM() {
+
 		model = new TmModel();
-		} catch (Exception e){
-			System.out.println("Could not access log file, Exiting.");
-		}
+
 	}
 
 	private void commandSwitcher(String[] args) {
-		
 
 		if (args.length == 0) {
 			printUsage();
@@ -71,11 +68,10 @@ public class TM {
 			printUsage();// if we get here then no properly formatted command
 							// was entered.
 		}
-		
+
 		model.close();
 		return;
 	}
-
 
 	private String summaryFormatter(String[] line) {
 		String returnString = "";
@@ -85,8 +81,6 @@ public class TM {
 
 		return returnString;
 	}
-
-	
 
 	/**
 	 * Converts a time interval in milliseconds to proper HH:MM:SS format. code
@@ -110,5 +104,4 @@ public class TM {
 		// TODO add code to print usage information
 	}
 
-	
 }

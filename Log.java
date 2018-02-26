@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.TreeSet;
@@ -20,7 +20,7 @@ import java.util.TreeSet;
  * 
  */
 @SuppressWarnings("serial")
-public class Log implements Serializable {
+public class Log implements Serializable, AutoCloseable {
 
 	String filePath = "data.dat";
 	LinkedList<Record> logData;
@@ -76,11 +76,11 @@ public class Log implements Serializable {
 	}
 
 	public void close() {
-		try {
-			FileOutputStream fout = new FileOutputStream(filePath);
-			ObjectOutputStream out = new ObjectOutputStream(fout);
+		try(FileOutputStream fout = new FileOutputStream(filePath);
+			ObjectOutputStream out = new ObjectOutputStream(fout);) {
+			
 			out.writeObject(logData);
-			out.close();
+			
 		} catch (Exception e) {
 			System.out.println("exception in write");
 			// TODO handle exceptions here
@@ -147,13 +147,13 @@ public class Log implements Serializable {
 	}
 
 	private class Record implements Serializable {
-		String timeStamp;// this will provide a unique identifier for records
+	//	LocalDateTime timeStamp;// this will provide a unique identifier for records
 		Command cmd;
 		String task;
 		String data;
 
 		public Record(Command type, String task, String value) {
-			timeStamp = LocalDateTime.now().toString();
+			//timeStamp = LocalDateTime.now();
 			cmd = type;
 			this.task = task;
 			data = value;
