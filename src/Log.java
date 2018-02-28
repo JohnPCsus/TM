@@ -77,11 +77,11 @@ public class Log implements Serializable, AutoCloseable {
 	}
 
 	public void close() {
-		try(FileOutputStream fout = new FileOutputStream(filePath);
-			ObjectOutputStream out = new ObjectOutputStream(fout);) {
-			
+		try (FileOutputStream fout = new FileOutputStream(filePath);
+				ObjectOutputStream out = new ObjectOutputStream(fout);) {
+
 			out.writeObject(logData);
-			
+
 		} catch (Exception e) {
 			System.out.println("exception in write");
 			// TODO handle exceptions here
@@ -110,7 +110,7 @@ public class Log implements Serializable, AutoCloseable {
 			if (i.cmd == Command.RENAME && i.task.equals(searchKey)) {
 				searchKey = (i.data);
 			}
-			
+
 		}
 		return "";
 	}
@@ -157,13 +157,14 @@ public class Log implements Serializable, AutoCloseable {
 	}
 
 	private class Record implements Serializable {
-	//	LocalDateTime timeStamp;// this will provide a unique identifier for records
+		// LocalDateTime timeStamp;// this will provide a unique identifier for
+		// records
 		Command cmd;
 		String task;
 		String data;
 
 		public Record(Command type, String task, String value) {
-			//timeStamp = LocalDateTime.now();
+			// timeStamp = LocalDateTime.now();
 			cmd = type;
 			this.task = task;
 			data = value;
