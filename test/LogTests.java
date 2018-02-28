@@ -165,6 +165,8 @@ public class LogTests {
 	}
 	
 	
+	
+	
 
 	private void corruptLogFile() {
 		File logFile = new File("data.dat");
