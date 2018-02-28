@@ -1,15 +1,5 @@
+package main;
 import java.util.concurrent.TimeUnit;
-
-enum Command {
-	START("start"), STOP("stop"), SUMMARY("summary"), DESCRIPTION("description"), SIZE("size"), RENAME("rename");
-	// @SuppressWarnings("unused")
-	// private final String sValue;
-
-	Command(String Value) {
-		// this.sValue = Value;
-	}
-
-}
 
 public class TM {
 

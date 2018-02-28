@@ -1,3 +1,4 @@
+package main;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,8 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
-//import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,7 +26,7 @@ public class Log implements Serializable, AutoCloseable {
 	LinkedList<Record> logData;
 
 	// @SuppressWarnings("unchecked")
-	Log() throws FileNotFoundException, IOException {
+	public Log() throws FileNotFoundException, IOException {
 
 		File file = new File(filePath);
 

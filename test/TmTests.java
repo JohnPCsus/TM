@@ -1,9 +1,13 @@
-import java.io.*;
+package test;
 
+
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import main.TM;
 
 public class TmTests {
 

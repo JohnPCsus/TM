@@ -1,4 +1,6 @@
-import static org.junit.Assert.*;
+package test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +9,9 @@ import java.util.TreeSet;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import main.Command;
+import main.Log;
 
 public class LogTests {
 

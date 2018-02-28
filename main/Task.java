@@ -1,4 +1,4 @@
-import java.util.Iterator;
+package main;
 
 public class Task {
 	String name;
