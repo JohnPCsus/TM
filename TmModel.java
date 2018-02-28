@@ -1,14 +1,13 @@
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class TmModel {
+public class TmModel implements ITMModel {
 	Log log = null;
 
 	TmModel()  {
 		try {
 			log = new Log();
 		} catch (Exception e) {
-
-			
 			System.out.println("Could not access log file, Exiting.");
 		}
 	}
@@ -29,39 +28,43 @@ public class TmModel {
 	 * command.
 	 * 
 	 */
-	public boolean isRunning(String task) {
+	private boolean isRunning(String task) {
 		Long lastStart;
 		Long lastStop;
 
 		// if the task has never been started before return true.
 		try {
-			lastStart = Long.parseLong(log.getLastInstanceOf(Command.start, task));
+			lastStart = Long.parseLong(log.getLastInstanceOf(Command.START, task));
 		} catch (NumberFormatException e) {
 			return false;
 		}
 		// if the task has never been stopped before return true.
 		try {
-			lastStop = Long.parseLong(log.getLastInstanceOf(Command.stop, task));
+			lastStop = Long.parseLong(log.getLastInstanceOf(Command.STOP, task));
 		} catch (NumberFormatException e) {
 			return true;
 		}
 		return lastStart > lastStop;
 	}
 
-	public void commandStart(String task) {
+	public boolean startTask(String task) {
 		if (!isRunning(task)) {
 			Long time = System.currentTimeMillis();
-			log.add(Command.start, task, time.toString());
+			log.add(Command.START, task, time.toString());
+			return true;
 		} else {
-			System.out.println("That task already running");
+			return false;
 
 		}
 	}
 
-	public void commandStop(String task) {
+	public boolean stopTask(String task) {
 		if (isRunning(task)) {
 			Long time = System.currentTimeMillis();
-			log.add(Command.stop, task, time.toString());
+			log.add(Command.STOP, task, time.toString());
+			return true;
+		} else{
+			return false;
 		}
 	}
 
@@ -71,30 +74,29 @@ public class TmModel {
 	 * all of the stop times respectively. We then take the difference.
 	 * (a-b)+(c-d) = (a+c)-(b+d).
 	 */
-	// TODO this method needs to not print to the screen, it needs to return
-	// type
-	// String[]
+
+	@Deprecated
 	public void commandSummary(String task) {
 		Long startSum = (long) 0;
 		Long stopSum = (long) 0;
 
 		String[] values;
-		String description = summaryFormatter(log.getAllInstanceOf(Command.description, task));
+		String description = descriptionBuilder(log.getAllInstanceOf(Command.DESCRIPTION, task));
 
-		values = log.getAllInstanceOf(Command.start, task);
+		values = log.getAllInstanceOf(Command.START, task);
 		for (String i : values) {
 			startSum += Long.parseLong(i);
 		}
-		values = log.getAllInstanceOf(Command.stop, task);
+		values = log.getAllInstanceOf(Command.STOP, task);
 		for (String i : values) {
 			stopSum += Long.parseLong(i);
 		}
 
 		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "		"
-				+ log.getLastInstanceOf(Command.size, task) + "	" + description);
+				+ log.getLastInstanceOf(Command.SIZE, task) + "	" + description);
 		// System.out.println();
 	}
-
+@Deprecated
 	public void commandSummary() {
 
 		String[] tasks;
@@ -105,16 +107,18 @@ public class TmModel {
 
 	}
 
-	public void commandSize(String task, String size) {
-		log.add(Command.size, task, size);
+	public boolean sizeTask(String task, String size) {
+		log.add(Command.SIZE, task, size);
+		return true;
 	}
 
-	public void commandDescribe(String task, String description) {
-		log.add(Command.description, task, description);
+	public boolean describeTask(String task, String description) {
+		log.add(Command.DESCRIPTION, task, description);
+		return true;
 	}
 
-	// TODO this does not belong in this class
-	private String summaryFormatter(String[] line) {
+	
+	private String descriptionBuilder(String[] line) {
 		String returnString = "";
 		for (String i : line) {
 			returnString = returnString + i + " ";
@@ -132,12 +136,98 @@ public class TmModel {
 	 *            a time interval
 	 * @return a properly formated String in HH:MM:SS format
 	 */
-	// TODO this does not belong in this class
+	
 	private String millisToFormatedTime(Long millis) {
 		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
 				TimeUnit.MILLISECONDS.toMinutes(millis)
 						- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
 				TimeUnit.MILLISECONDS.toSeconds(millis)
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+	}
+
+	@Override
+	public boolean deleteTask(String task) {
+		//we delete our task by setting it's old name to an illegal value ensuring that it never returns a search hit.
+		return renameTask(task,null);
+		
+	}
+
+	@Override
+	/*
+	 * 
+	 * @see ITMModel#renameTask(java.lang.String, java.lang.String)
+	 * rename inserts a rename record in the log with the task as the new task name and the data as the old task name.
+	 */
+	public boolean renameTask(String oldTaskName, String newTaskName) {
+		log.add(Command.RENAME, newTaskName, oldTaskName);
+		return true;
+	}
+
+	@Override
+	public String taskElapsedTime(String task) {
+		String[] values;
+		Long startSum = (long) 0;
+		Long stopSum = (long) 0;
+		values = log.getAllInstanceOf(Command.START, task);
+		for (String i : values) {
+			startSum += Long.parseLong(i);
+		}
+		values = log.getAllInstanceOf(Command.STOP, task);
+		for (String i : values) {
+			stopSum += Long.parseLong(i);
+		}
+		return(millisToFormatedTime(stopSum - startSum));
+	}
+
+	@Override
+	public String taskSize(String task) {
+		return log.getLastInstanceOf(Command.SIZE, task);
+	}
+
+	@Override
+	public String taskDescription(String task) {
+		return descriptionBuilder(log.getAllInstanceOf(Command.DESCRIPTION, task));
+	}
+
+	@Override
+	public String minTimeForSize(String size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String maxTimeForSize(String size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String avgTimeForSize(String size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> taskNamesForSize(String size) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String elapsedTimeForAllTasks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> taskNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> taskSizes() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

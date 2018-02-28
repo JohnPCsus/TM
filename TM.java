@@ -1,7 +1,7 @@
 import java.util.concurrent.TimeUnit;
 
 enum Command {
-	start("start"), stop("stop"), summary("summary"), description("description"), size("size");
+	START("start"), STOP("stop"), SUMMARY("summary"), DESCRIPTION("description"), SIZE("size"), RENAME("rename");
 	// @SuppressWarnings("unused")
 	// private final String sValue;
 
@@ -35,18 +35,18 @@ public class TM {
 		switch (args[0]) {
 		case "start":
 			if (args.length == 2) {
-				model.commandStart(args[1]);
+				model.startTask(args[1]);
 			}
 			break;
 		case "stop":
 			if (args.length == 2) {
-				model.commandStop(args[1]);
+				model.stopTask(args[1]);
 			}
 			break;
 
 		case "size":
 			if (args.length == 3) {
-				model.commandSize(args[1], args[2]);
+				model.sizeTask(args[1], args[2]);
 			}
 		case "summary":
 			if (args.length == 1) {
@@ -59,9 +59,9 @@ public class TM {
 			break;
 		case "describe":
 			if (args.length == 3) {
-				model.commandDescribe(args[1], args[2]);
+				model.describeTask(args[1], args[2]);
 			} else if (args.length == 4) {
-				model.commandSize(args[1], args[3]);
+				model.sizeTask(args[1], args[3]);
 			}
 			break;
 		default:
@@ -72,7 +72,13 @@ public class TM {
 		model.close();
 		return;
 	}
-
+	private void summaryHandler(){
+		for(String i:model.taskNames());
+	}
+	private void summaryHandler(String task){
+		String returnString =task + "\t" + model.taskElapsedTime(task) + "\t"+ model.taskSize(task) +"\t" + model.taskDescription(task) ;
+		
+	}
 	private String summaryFormatter(String[] line) {
 		String returnString = "";
 		for (String i : line) {
