@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 public class TmModel implements ITMModel {
 	Log log = null;
 
-	TmModel()  {
+	TmModel() {
 		try {
 			log = new Log();
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ public class TmModel implements ITMModel {
 			Long time = System.currentTimeMillis();
 			log.add(Command.STOP, task, time.toString());
 			return true;
-		} else{
+		} else {
 			return false;
 		}
 	}
@@ -96,7 +96,8 @@ public class TmModel implements ITMModel {
 				+ log.getLastInstanceOf(Command.SIZE, task) + "	" + description);
 		// System.out.println();
 	}
-@Deprecated
+
+	@Deprecated
 	public void commandSummary() {
 
 		String[] tasks;
@@ -117,7 +118,6 @@ public class TmModel implements ITMModel {
 		return true;
 	}
 
-	
 	private String descriptionBuilder(String[] line) {
 		String returnString = "";
 		for (String i : line) {
@@ -136,7 +136,7 @@ public class TmModel implements ITMModel {
 	 *            a time interval
 	 * @return a properly formated String in HH:MM:SS format
 	 */
-	
+
 	private String millisToFormatedTime(Long millis) {
 		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
 				TimeUnit.MILLISECONDS.toMinutes(millis)
@@ -147,16 +147,18 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public boolean deleteTask(String task) {
-		//we delete our task by setting it's old name to an illegal value ensuring that it never returns a search hit.
-		return renameTask(task,null);
-		
+		// we delete our task by setting it's old name to an illegal value
+		// ensuring that it never returns a search hit.
+		return renameTask(task, null);
+
 	}
 
 	@Override
 	/*
 	 * 
-	 * @see ITMModel#renameTask(java.lang.String, java.lang.String)
-	 * rename inserts a rename record in the log with the task as the new task name and the data as the old task name.
+	 * @see ITMModel#renameTask(java.lang.String, java.lang.String) rename
+	 * inserts a rename record in the log with the task as the new task name and
+	 * the data as the old task name.
 	 */
 	public boolean renameTask(String oldTaskName, String newTaskName) {
 		log.add(Command.RENAME, newTaskName, oldTaskName);
@@ -165,18 +167,19 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public String taskElapsedTime(String task) {
-		String[] values;
+		String[] startValues,stopValues;
 		Long startSum = (long) 0;
 		Long stopSum = (long) 0;
-		values = log.getAllInstanceOf(Command.START, task);
-		for (String i : values) {
-			startSum += Long.parseLong(i);
+		
+		startValues = log.getAllInstanceOf(Command.START, task);
+		stopValues = log.getAllInstanceOf(Command.STOP, task);
+		
+		for (int i = 0; i < stopValues.length; i++) {
+			stopSum += Long.parseLong(stopValues[i]);
+			startSum += Long.parseLong(startValues[i]);
 		}
-		values = log.getAllInstanceOf(Command.STOP, task);
-		for (String i : values) {
-			stopSum += Long.parseLong(i);
-		}
-		return(millisToFormatedTime(stopSum - startSum));
+
+		return (millisToFormatedTime(stopSum - startSum));
 	}
 
 	@Override
