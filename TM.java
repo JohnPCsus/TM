@@ -51,10 +51,10 @@ public class TM {
 		case "summary":
 			if (args.length == 1) {
 				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
-				model.commandSummary();
+				summaryHandler();
 			} else if (args.length == 2) {
 				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
-				model.commandSummary(args[1]);
+				summaryHandler(args[1]);
 			}
 			break;
 		case "describe":
@@ -73,10 +73,15 @@ public class TM {
 		return;
 	}
 	private void summaryHandler(){
-		for(String i:model.taskNames());
+		for(String i:model.taskNames()){
+			summaryHandler(i);
+		}
 	}
 	private void summaryHandler(String task){
-		String returnString =task + "\t" + model.taskElapsedTime(task) + "\t"+ model.taskSize(task) +"\t" + model.taskDescription(task) ;
+		System.out.println(task + "\t" + 
+						model.taskElapsedTime(task) + "\t"+
+						model.taskSize(task) +"\t" + 
+						model.taskDescription(task)) ;
 		
 	}
 	private String summaryFormatter(String[] line) {

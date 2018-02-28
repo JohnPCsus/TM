@@ -100,9 +100,8 @@ public class TmModel implements ITMModel {
 	@Deprecated
 	public void commandSummary() {
 
-		String[] tasks;
-		tasks = log.getTasks();
-		for (String i : tasks) {
+		
+		for (String i : log.getTasks()) {
 			commandSummary(i);
 		}
 
@@ -224,8 +223,7 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public Set<String> taskNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return log.getTasks();
 	}
 
 	@Override

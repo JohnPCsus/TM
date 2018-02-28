@@ -11,6 +11,7 @@ import java.io.StreamCorruptedException;
 //import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -101,10 +102,15 @@ public class Log implements Serializable, AutoCloseable {
 	 *          found
 	 */
 	public String getLastInstanceOf(Command cmd, String task) {
+		String searchKey = task;
 		for (Record i : logData) {
-			if (i.cmd == cmd && task.equals(i.task)) {
+			if (i.cmd == cmd && i.task.equals(searchKey)) {
 				return i.data;
 			}
+			if (i.cmd == Command.RENAME && i.task.equals(searchKey)) {
+				searchKey = (i.data);
+			}
+			
 		}
 		return "";
 	}
@@ -116,11 +122,15 @@ public class Log implements Serializable, AutoCloseable {
 	 * @return
 	 */
 	public String[] getAllInstanceOf(Command cmd, String task) {
+		String searchKey = task;
 		LinkedList<String> returnValuesList = new LinkedList<>();
 		String[] returnValuesArray = new String[0];
 		for (Record i : logData) {
-			if (i.cmd == cmd && i.task.equals(task)) {
+			if (i.cmd == cmd && i.task.equals(searchKey)) {
 				returnValuesList.add(i.data);
+			}
+			if (i.cmd == Command.RENAME && i.task.equals(searchKey)) {
+				searchKey = (i.data);
 			}
 		}
 
@@ -131,13 +141,13 @@ public class Log implements Serializable, AutoCloseable {
 	 * 
 	 * @return returns an array containing each unique task in the log
 	 */
-	public String[] getTasks() {
+	public Set<String> getTasks() {
 
 		TreeSet<String> returnValues = new TreeSet<>();
 		for (Record i : logData) {
 			returnValues.add(i.task);
 		}
-		return Arrays.copyOf(returnValues.toArray(), returnValues.size(), String[].class);
+		return returnValues;
 
 	}
 
