@@ -1,4 +1,5 @@
 package test;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -86,7 +87,7 @@ public class LogTests {
 			fail();
 			return;
 		}
-		
+
 	}
 	// @Test (expected = IOException.class)
 
@@ -163,9 +164,74 @@ public class LogTests {
 		assertTrue(expected.equals(log.getTasks()));
 		log.close();
 	}
+
+	@Test
+	public void logGetTask_renamedTask() {
+		Log log;
+		try {
+			log = new Log();
+		} catch (Exception e) {
+			return;
+		}
+		log.add(Command.START, "Foo", "123");
+		log.add(Command.RENAME, "Bar", "Foo");
+		TreeSet<String> expected = new TreeSet<>();
+		expected.add("Bar");
+		assertTrue(expected.equals(log.getTasks()));
+		log.close();
+	}
 	
-	
-	
+	@Test
+	public void logGetTasks_taskRenamedOldTaskNameReused() {
+		Log log;
+		try {
+			log = new Log();
+		} catch (Exception e) {
+			return;
+		}
+		log.add(Command.START, "Foo", "123");
+		log.add(Command.RENAME, "Bar", "Foo");
+		log.add(Command.START, "Foo", "1234");
+		TreeSet<String> expected = new TreeSet<>();
+		expected.add("Bar");
+		expected.add("Foo");
+		assertTrue(expected.equals(log.getTasks()));
+		log.close();
+	}
+
+	@Test
+	public void logGetTask_deleteddTask() {
+		Log log;
+		try {
+			log = new Log();
+		} catch (Exception e) {
+			return;
+		}
+		log.add(Command.START, "Foo", "123");
+		log.add(Command.DELETE, "Foo", null);
+		TreeSet<String> expected = new TreeSet<>();
+
+		assertTrue(expected.equals(log.getTasks()));
+		log.close();
+	}
+
+	@Test
+	public void logGetTask_deletedTaskNameReused() {
+		Log log;
+		try {
+			log = new Log();
+		} catch (Exception e) {
+			return;
+		}
+		log.add(Command.START, "Foo", "123");
+		log.add(Command.DELETE, "Foo", null);
+		log.add(Command.START, "Foo", "1234");
+		TreeSet<String> expected = new TreeSet<>();
+		expected.add("Foo");
+		assertTrue(expected.equals(log.getTasks()));
+		log.close();
+	}
+
 	
 
 	private void corruptLogFile() {

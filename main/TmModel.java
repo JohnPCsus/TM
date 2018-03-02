@@ -149,13 +149,13 @@ public class TmModel implements ITMModel {
 	public boolean deleteTask(String task) {
 		// we delete our task by setting it's old name to an illegal value
 		// ensuring that it never returns a search hit.
-		return renameTask(task, null);
+		log.add(Command.DELETE, task, null);
+		return true;
 
 	}
 
 	@Override
 	/*
-	 * 
 	 * @see ITMModel#renameTask(java.lang.String, java.lang.String) rename
 	 * inserts a rename record in the log with the task as the new task name and
 	 * the data as the old task name.

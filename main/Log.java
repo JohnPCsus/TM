@@ -1,4 +1,5 @@
 package main;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,9 +10,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
+
+//import main.Log.Record;
 
 /**
  * The Log Class Handles all storage operations of the TM program. It handles
@@ -131,6 +135,9 @@ public class Log implements Serializable, AutoCloseable {
 			if (i.cmd == Command.RENAME && i.task.equals(searchKey)) {
 				searchKey = (i.data);
 			}
+			if (i.cmd == Command.DELETE && i.task.equals(searchKey)) {
+				return returnValuesList.toArray(returnValuesArray);
+			}
 		}
 
 		return returnValuesList.toArray(returnValuesArray);
@@ -143,10 +150,19 @@ public class Log implements Serializable, AutoCloseable {
 	public Set<String> getTasks() {
 
 		TreeSet<String> returnValues = new TreeSet<>();
-		for (Record i : logData) {
-			returnValues.add(i.task);
+		Iterator<Record> logIterator = logData.descendingIterator();
+		while (logIterator.hasNext()) {
+			Record currentRecord = logIterator.next();
+			if (currentRecord.cmd.equals(Command.DELETE)) {
+				returnValues.remove(currentRecord.task);
+			} else if (currentRecord.cmd.equals(Command.RENAME)) {
+				returnValues.remove(currentRecord.data);
+				returnValues.add(currentRecord.task);
+			} else {
+			
+			returnValues.add(currentRecord.task);
 		}
-		return returnValues;
+	}return returnValues;
 
 	}
 
