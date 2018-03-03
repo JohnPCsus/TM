@@ -1,5 +1,7 @@
 package main;
-import java.util.concurrent.TimeUnit;
+
+import java.util.Formatter;
+import java.util.Set;
 
 public class TM {
 
@@ -39,21 +41,28 @@ public class TM {
 				model.sizeTask(args[1], args[2]);
 			}
 		case "summary":
-			if (args.length == 1) {
-				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
+			if(args.length == 1){
 				summaryHandler();
-			} else if (args.length == 2) {
-				System.out.println("Task Name" + "	" + "Time" + "			" + "size" + "	" + "Description" + "	");
+			} else if(args.length ==2 )
 				summaryHandler(args[1]);
-			}
 			break;
 		case "describe":
 			if (args.length == 3) {
 				model.describeTask(args[1], args[2]);
-			} else if (args.length == 4) {
+			}
+			if (args.length == 4) {
 				model.sizeTask(args[1], args[3]);
 			}
 			break;
+
+		case "delete":
+			if (args.length == 2)
+				model.deleteTask(args[1]);
+			break;
+		case "rename":
+			if (args.length == 3) {
+				model.renameTask(args[1], args[2]);
+			}
 		default:
 			printUsage();// if we get here then no properly formatted command
 							// was entered.
@@ -62,42 +71,51 @@ public class TM {
 		model.close();
 		return;
 	}
-	private void summaryHandler(){
-		for(String i:model.taskNames()){
+
+	private void summaryHandler() {
+		System.out.print(summaryFormatter(new String[]{"Task Name" ,"Time" ,"size" , "Description"}));
+
+		for (String i : model.taskNames()) {
 			summaryHandler(i);
 		}
+		System.out.println();
+		statisticsPrinter();
 	}
-	private void summaryHandler(String task){
-		System.out.println(task + "\t" + 
-						model.taskElapsedTime(task) + "\t"+
-						model.taskSize(task) +"\t" + 
-						model.taskDescription(task)) ;
-		
+
+	private void summaryHandler(String task) {
+		String[] tokens = new String[4];
+		tokens[0] = task;
+		tokens[1] = model.taskElapsedTime(task);
+		tokens[2] = model.taskSize(task);
+		tokens[3] = model.taskDescription(task);
+		System.out.print(summaryFormatter(tokens));
+
 	}
-	private String summaryFormatter(String[] line) {
-		String returnString = "";
-		for (String i : line) {
-			returnString = returnString + i + " ";
+
+	private void statisticsPrinter() {
+		System.out.print(summaryFormatter(new String[]{"Size" ,"Min" ,"Max" , "Avg"}));
+		Set<String> sizes = model.taskSizes();
+		String[] tokens = new String[4];
+		for (String i : sizes) {
+			tokens[0] = i;
+			tokens[1] = model.minTimeForSize(i);
+			tokens[2] = model.maxTimeForSize(i);
+			tokens[3] = model.avgTimeForSize(i);
+			System.out.print(summaryFormatter(tokens));
 		}
 
-		return returnString;
 	}
 
-	/**
-	 * Converts a time interval in milliseconds to proper HH:MM:SS format. code
-	 * taken from.
-	 * https://stackoverflow.com/questions/9027317/how-to-convert-milliseconds-to-hhmmss-format
-	 * 
-	 * @param millis
-	 *            a time interval
-	 * @return a properly formated String in HH:MM:SS format
-	 */
-	private String millisToFormatedTime(Long millis) {
-		return String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
-				TimeUnit.MILLISECONDS.toMinutes(millis)
-						- TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-				TimeUnit.MILLISECONDS.toSeconds(millis)
-						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+	private String summaryFormatter(String[] tokens) {
+		
+		
+		Formatter fmt = new Formatter();
+		fmt.format("%16s\t%10s\t%4s\t%s%n",tokens[0],tokens[1],tokens[2],tokens[3]);
+		//System.out.print(fmt.toString());
+		String returnString = fmt.toString();
+		fmt.close();
+
+		return returnString;
 	}
 
 	private void printUsage() {

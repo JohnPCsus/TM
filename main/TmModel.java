@@ -72,44 +72,6 @@ public class TmModel implements ITMModel {
 		}
 	}
 
-	/*
-	 * This function calculates the total time spent on a task. as our time
-	 * values are all stored in epoch time we sum all of the start times, and
-	 * all of the stop times respectively. We then take the difference.
-	 * (a-b)+(c-d) = (a+c)-(b+d).
-	 */
-
-	@Deprecated
-	public void commandSummary(String task) {
-		Long startSum = (long) 0;
-		Long stopSum = (long) 0;
-
-		String[] values;
-		String description = descriptionBuilder(log.getAllInstanceOf(Command.DESCRIPTION, task));
-
-		values = log.getAllInstanceOf(Command.START, task);
-		for (String i : values) {
-			startSum += Long.parseLong(i);
-		}
-		values = log.getAllInstanceOf(Command.STOP, task);
-		for (String i : values) {
-			stopSum += Long.parseLong(i);
-		}
-
-		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "		"
-				+ log.getLastInstanceOf(Command.SIZE, task) + "	" + description);
-		// System.out.println();
-	}
-
-	@Deprecated
-	public void commandSummary() {
-
-		for (String i : log.getTasks()) {
-			commandSummary(i);
-		}
-
-	}
-
 	public boolean sizeTask(String task, String size) {
 		log.add(Command.SIZE, task, size);
 		return true;
@@ -216,14 +178,14 @@ public class TmModel implements ITMModel {
 			tasksWithTimes.put(taskElapsedTimeMillis(i), i);
 		}
 		return millisToFormatedTime(tasksWithTimes.pollLastEntry().getKey());
-		
+
 	}
 
 	@Override
 	public String avgTimeForSize(String size) {
 		Set<String> tasks = taskNamesForSize(size);
 		Long sum = (long) 0;
-		for(String i : tasks){
+		for (String i : tasks) {
 			sum += taskElapsedTimeMillis(i);
 		}
 		return millisToFormatedTime(sum / tasks.size());
@@ -262,5 +224,42 @@ public class TmModel implements ITMModel {
 			sizes.add(taskSize(i));
 		}
 		return sizes;
+	}
+
+	/*
+	 * This function calculates the total time spent on a task. as our time
+	 * values are all stored in epoch time we sum all of the start times, and
+	 * all of the stop times respectively. We then take the difference.
+	 * (a-b)+(c-d) = (a+c)-(b+d).
+	 */
+	@Deprecated
+	public void commandSummary(String task) {
+		Long startSum = (long) 0;
+		Long stopSum = (long) 0;
+
+		String[] values;
+		String description = descriptionBuilder(log.getAllInstanceOf(Command.DESCRIPTION, task));
+
+		values = log.getAllInstanceOf(Command.START, task);
+		for (String i : values) {
+			startSum += Long.parseLong(i);
+		}
+		values = log.getAllInstanceOf(Command.STOP, task);
+		for (String i : values) {
+			stopSum += Long.parseLong(i);
+		}
+
+		System.out.println(task + ":	" + millisToFormatedTime(stopSum - startSum) + "		"
+				+ log.getLastInstanceOf(Command.SIZE, task) + "	" + description);
+		// System.out.println();
+	}
+
+	@Deprecated
+	public void commandSummary() {
+
+		for (String i : log.getTasks()) {
+			commandSummary(i);
+		}
+
 	}
 }
