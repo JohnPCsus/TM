@@ -1,5 +1,8 @@
 package main;
+
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 public class TmModel implements ITMModel {
@@ -101,7 +104,6 @@ public class TmModel implements ITMModel {
 	@Deprecated
 	public void commandSummary() {
 
-		
 		for (String i : log.getTasks()) {
 			commandSummary(i);
 		}
@@ -167,19 +169,23 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public String taskElapsedTime(String task) {
-		String[] startValues,stopValues;
+
+		return (millisToFormatedTime(taskElapsedTimeMillis(task)));
+	}
+
+	private Long taskElapsedTimeMillis(String task) {
+		String[] startValues, stopValues;
 		Long startSum = (long) 0;
 		Long stopSum = (long) 0;
-		
+
 		startValues = log.getAllInstanceOf(Command.START, task);
 		stopValues = log.getAllInstanceOf(Command.STOP, task);
-		
+
 		for (int i = 0; i < stopValues.length; i++) {
 			stopSum += Long.parseLong(stopValues[i]);
 			startSum += Long.parseLong(startValues[i]);
 		}
-
-		return (millisToFormatedTime(stopSum - startSum));
+		return stopSum - startSum;
 	}
 
 	@Override
@@ -194,8 +200,12 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public String minTimeForSize(String size) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> tasks = taskNamesForSize(size);
+		TreeMap<Long, String> tasksWithTimes = new TreeMap<>();
+		for (String i : tasks) {
+			tasksWithTimes.put(taskElapsedTimeMillis(i), i);
+		}
+		return millisToFormatedTime(tasksWithTimes.pollFirstEntry().getKey());
 	}
 
 	@Override
@@ -212,14 +222,22 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public Set<String> taskNamesForSize(String size) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> returnValues = new TreeSet<>();
+		for (String i : log.getTasks()) {
+			if (taskSize(i) == size) {
+				returnValues.add(i);
+			}
+		}
+		return returnValues;
 	}
 
 	@Override
 	public String elapsedTimeForAllTasks() {
-		// TODO Auto-generated method stub
-		return null;
+		Long elapsedTime = (long) 0;
+		for (String i : log.getTasks()) {
+			elapsedTime += taskElapsedTimeMillis(i);
+		}
+		return millisToFormatedTime(elapsedTime);
 	}
 
 	@Override
@@ -229,7 +247,11 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public Set<String> taskSizes() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> tasks = log.getTasks();
+		Set<String> sizes = new TreeSet<>();
+		for (String i : tasks) {
+			sizes.add(taskSize(i));
+		}
+		return sizes;
 	}
 }
