@@ -210,14 +210,23 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public String maxTimeForSize(String size) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> tasks = taskNamesForSize(size);
+		TreeMap<Long, String> tasksWithTimes = new TreeMap<>();
+		for (String i : tasks) {
+			tasksWithTimes.put(taskElapsedTimeMillis(i), i);
+		}
+		return millisToFormatedTime(tasksWithTimes.pollLastEntry().getKey());
+		
 	}
 
 	@Override
 	public String avgTimeForSize(String size) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> tasks = taskNamesForSize(size);
+		Long sum = (long) 0;
+		for(String i : tasks){
+			sum += taskElapsedTimeMillis(i);
+		}
+		return millisToFormatedTime(sum / tasks.size());
 	}
 
 	@Override
