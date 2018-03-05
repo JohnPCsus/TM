@@ -81,9 +81,11 @@ public class TmModel implements ITMModel {
 		log.add(Command.DESCRIPTION, task, description);
 		return true;
 	}
-
+	
+	
 	private String descriptionBuilder(String[] line) {
 		String returnString = "";
+		
 		for (String i : line) {
 			returnString = returnString + i + " ";
 		}
@@ -111,8 +113,8 @@ public class TmModel implements ITMModel {
 
 	@Override
 	public boolean deleteTask(String task) {
-		// we delete our task by setting it's old name to an illegal value
-		// ensuring that it never returns a search hit.
+		//TMModel passes responsibility for handling how tasks are renamed/deleted to the Log class
+		//TMModel knows little about how entries are associated with tasks
 		log.delete(task);
 		return true;
 
@@ -125,6 +127,8 @@ public class TmModel implements ITMModel {
 	 * the data as the old task name.
 	 */
 	public boolean renameTask(String oldTaskName, String newTaskName) {
+		//TMModel passes responsibility for handling how tasks are renamed/deleted to the Log class
+		//TMModel knows little about how entries are associated with tasks
 		log.rename(oldTaskName, newTaskName);
 		return true;
 	}
@@ -195,7 +199,7 @@ public class TmModel implements ITMModel {
 	public Set<String> taskNamesForSize(String size) {
 		Set<String> returnValues = new TreeSet<>();
 		for (String i : log.getTasks()) {
-			if (taskSize(i) == size) {
+			if (taskSize(i).equals(size) ) {
 				returnValues.add(i);
 			}
 		}

@@ -95,7 +95,7 @@ public class Log implements Serializable, AutoCloseable {
 	/**
 	 * Finds and returns the most recent occurrence of a given Command and task.
 	 * It then returns the data given for that command. If no Occurrence of that
-	 * command and task is found returns null.
+	 * command and task is found returns an empty string.
 	 * 
 	 * @param cmd
 	 *            the command to search for
