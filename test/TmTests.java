@@ -1,5 +1,6 @@
 package test;
-
+//TODO this suite needs to be completely redone
+//we need separate TM and TMModel test suites, may need to use mocking(mockito?) to do this well.
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

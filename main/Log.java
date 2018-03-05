@@ -136,7 +136,8 @@ public class Log implements Serializable, AutoCloseable {
 				searchKey = (i.data);
 			}
 			if (i.cmd == Command.DELETE && i.task.equals(searchKey)) {
-				return returnValuesList.toArray(returnValuesArray);
+				
+				break;
 			}
 		}
 
@@ -169,6 +170,13 @@ public class Log implements Serializable, AutoCloseable {
 	public void add(Command newEntryCommand, String newEntryTask, String newEntryData) {
 		Record newRecord = new Record(newEntryCommand, newEntryTask, newEntryData);
 		logData.addFirst(newRecord);
+	}
+	
+	public void rename(String oldName, String newName){
+		add(Command.RENAME, oldName, newName);
+	}
+	public void delete(String taskName){
+		add(Command.DELETE, taskName, null);
 	}
 
 	private class Record implements Serializable {

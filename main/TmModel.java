@@ -113,7 +113,7 @@ public class TmModel implements ITMModel {
 	public boolean deleteTask(String task) {
 		// we delete our task by setting it's old name to an illegal value
 		// ensuring that it never returns a search hit.
-		log.add(Command.DELETE, task, null);
+		log.delete(task);
 		return true;
 
 	}
@@ -125,7 +125,7 @@ public class TmModel implements ITMModel {
 	 * the data as the old task name.
 	 */
 	public boolean renameTask(String oldTaskName, String newTaskName) {
-		log.add(Command.RENAME, newTaskName, oldTaskName);
+		log.rename(oldTaskName, newTaskName);
 		return true;
 	}
 
@@ -223,6 +223,7 @@ public class TmModel implements ITMModel {
 		for (String i : tasks) {
 			sizes.add(taskSize(i));
 		}
+		sizes.remove("");//TODO should unsized tasks really not be considered?
 		return sizes;
 	}
 

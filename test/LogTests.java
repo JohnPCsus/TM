@@ -200,7 +200,7 @@ public class LogTests {
 	}
 
 	@Test
-	public void logGetTask_deleteddTask() {
+	public void logGetTask_deletedTask() {
 		Log log;
 		try {
 			log = new Log();
@@ -230,6 +230,19 @@ public class LogTests {
 		expected.add("Foo");
 		assertTrue(expected.equals(log.getTasks()));
 		log.close();
+	}
+	
+	@Test
+	public void logGetAllInstanceOf_emptyLog(){
+		Log log;
+		try{
+			log = new Log();
+		} catch (Exception e){
+			return;
+		}
+		assertTrue(log.getAllInstanceOf(Command.START, "Foo").length==0);
+		log.close();
+		
 	}
 
 	
