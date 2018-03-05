@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
-public class TmModel implements ITMModel {
+public class TmModel implements ITMModel{
 	Log log = null;
 
 	TmModel() {
