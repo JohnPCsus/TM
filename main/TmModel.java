@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 public class TmModel implements ITMModel{
 	Log log = null;
 
-	TmModel() {
+	public TmModel() {
 		try {
 			log = new Log();
 		} catch (Exception e) {
