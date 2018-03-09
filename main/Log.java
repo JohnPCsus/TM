@@ -53,6 +53,7 @@ public class Log implements Serializable, AutoCloseable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void loadLogFile() throws FileNotFoundException, IOException {
 		try (FileInputStream fin = new FileInputStream(filePath); ObjectInputStream in = new ObjectInputStream(fin)) {
 
